@@ -7,6 +7,7 @@ class Product extends GetxController {
   int? amount;
   double? totalPrice;
   RxInt amount1 = 1.obs;
+  RxBool isDeleted = false.obs;
   Product();
   Product.from( this.name,  this.image,  this.price, this.favorite, {this.amount = 1, this.totalPrice = 0 });
   void incrementAmount(){
@@ -15,4 +16,8 @@ class Product extends GetxController {
   void decrementAmount(){
     amount1--;
   }
+  void changeStateChecked(bool value){
+    isDeleted.value = value;
+}
+
 }

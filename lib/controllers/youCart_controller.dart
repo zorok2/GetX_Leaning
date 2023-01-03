@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-
 import '../Product.dart';
 class YourCartController extends GetxController{
   var listProduct  = <Product>[].obs;
@@ -11,6 +10,11 @@ class YourCartController extends GetxController{
     }
     listProduct.add(product);
   }
+  void deleteProductChecked(){
+          listProduct.removeWhere((element) {
+            return element.isDeleted.value == true;
+          },);
+  }
   bool checkExist(Product product){
     bool exists = false;
     for (Product element in listProduct) {
@@ -21,6 +25,7 @@ class YourCartController extends GetxController{
     }
     return exists;
   }
+
    getTotalPrice(){
     double rs = 0;
     for (Product element in listProduct) {

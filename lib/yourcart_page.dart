@@ -1,16 +1,25 @@
 import 'package:container_test/Product.dart';
+import 'package:container_test/ProductPage.dart';
 import 'package:container_test/controllers/youCart_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class YourCartPage extends StatelessWidget {
+class YourCartPage extends StatefulWidget {
   const YourCartPage({Key? key}) : super(key: key);
+
+  @override
+  State<YourCartPage> createState() => _YourCartPageState();
+}
+
+class _YourCartPageState extends State<YourCartPage> {
+  var cbvisible = false;
+  var isclickdelete = false;
+  final controllerCart = Get.put(Product());
+  final YourCartController controller = Get.find();
 
   @override
   Widget build(BuildContext context) {
     print('rebuild yourcart');
-    final controllerCart = Get.put(Product());
-    final YourCartController controller = Get.find();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Your cart'),
@@ -63,6 +72,33 @@ class YourCartPage extends StatelessWidget {
                             'ORDER NOW',
                             style: TextStyle(color: Colors.white),
                           ),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              isclickdelete = !isclickdelete;
+                              controller.deleteProductChecked();
+                              ProductPage.refreshIsdelected();
+                            });
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                                color:
+                                    isclickdelete ? Colors.red : Colors.white,
+                                border:
+                                    Border.all(width: 2, color: Colors.red)),
+                            child: Text(
+                              isclickdelete == false
+                                  ? 'DELETE'
+                                  : 'DELETE SELECTED',
+                              style: TextStyle(
+                                  color: isclickdelete == false
+                                      ? Colors.red
+                                      : Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
                         )
                       ],
                     )
@@ -73,8 +109,8 @@ class YourCartPage extends StatelessWidget {
             const SizedBox(
               height: 30,
             ),
-            Flexible(
-              child: ListView.builder(
+            Obx(() {
+              return ListView.builder(
                 itemBuilder: (context, index) {
                   return Container(
                     margin: EdgeInsets.symmetric(vertical: 5),
@@ -90,19 +126,37 @@ class YourCartPage extends StatelessWidget {
                               offset: Offset(2, 2))
                         ]),
                     child: ListTile(
-                      leading: Container(
-                        padding: const EdgeInsets.all(18),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.purple.shade300,
-                        ),
-                        child: Text(
-                          '\$ ${controller.listProduct.elementAt(index).price}',
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14),
-                        ),
+                      leading: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Obx(() {
+                            return Visibility(
+                              visible: isclickdelete,
+                              child: Checkbox(
+                                value: controller
+                                    .listProduct[index].isDeleted.value,
+                                onChanged: (value) {
+                                  controller.listProduct[index]
+                                      .changeStateChecked(value!);
+                                },
+                              ),
+                            );
+                          }),
+                          Container(
+                            padding: const EdgeInsets.all(18),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.purple.shade300,
+                            ),
+                            child: Text(
+                              '\$ ${controller.listProduct.elementAt(index).price}',
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14),
+                            ),
+                          ),
+                        ],
                       ),
                       title: Text(
                         controller.listProduct[index].name!,
@@ -145,8 +199,8 @@ class YourCartPage extends StatelessWidget {
                 },
                 itemCount: controller.listProduct.length,
                 shrinkWrap: true,
-              ),
-            )
+              );
+            })
           ],
         ),
       ),

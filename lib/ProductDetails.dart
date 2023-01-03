@@ -1,6 +1,5 @@
 import 'package:container_test/Product.dart';
 import 'package:flutter/material.dart';
-
 class ProductDetail extends StatelessWidget {
   const ProductDetail({Key? key, required this.product}) : super(key: key);
   final Product product;

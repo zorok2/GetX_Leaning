@@ -22,7 +22,7 @@ class ProductPage extends StatelessWidget {
                 children:
                 // for (int i = 0; i < listProduct.length; i++)
                 //   ProductItem(screenSize: screenSize, productInF: listProduct[i])
-                listProduct.map((e) => ProductItem(screenSize: screenSize, productInF: e)).toList()
+                listProductMain.map((e) => ProductItem(screenSize: screenSize, productInF: e)).toList()
                 ,
               )
             ],
@@ -30,8 +30,13 @@ class ProductPage extends StatelessWidget {
         ));
   }
 
-
-  final List<Product> listProduct = [
+  static void refreshIsdelected()
+  {
+    for(var item in listProductMain){
+      item.changeStateChecked(false);
+    }
+  }
+  static final List<Product> listProductMain = [
     Product.from(
         "Quần jeannnnnnnnnnnnn",
         "https://cdn3.dhht.vn/wp-content/uploads/2020/09/nem-fashion.jpg",
